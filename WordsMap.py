@@ -34,6 +34,5 @@ def cal_score_test(wc):
         # if key in stop_word:
         #     return None
         score = wordmap.get(key, 0)
-        if score<0:
-            print(key,score,wc[key])
-
+        if score < 0:
+            print(key, score, wc[key])

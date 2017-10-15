@@ -3,7 +3,6 @@
 from glob2 import glob
 import json
 import os
-import numpy as np
 import codecs
 import thulac
 from multiprocessing import Pool
@@ -217,12 +216,13 @@ def multi():
 
     country_article_count = {}
     for c in country_counts:
-        country_article_count[c] = sum(list(country_counts[c].value()))
+        country_article_count[c] = sum(list(country_counts[c].values()))
     country_article_count = sorted(list(country_article_count.items()),
                                    key=lambda a: a[1], reverse=True)
     with open('article_count.txt', 'w') as f:
         for pair in country_article_count:
             f.write('%d %d\n' % (pair[0], pair[1]))
+
 
 
 if __name__ == '__main__':
