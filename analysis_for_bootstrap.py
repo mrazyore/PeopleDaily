@@ -134,8 +134,6 @@ def merge_count(map1, map2):
 
 
 def merge_total_count(map1, map2):
-    print('test')
-    print(map1)
     for y in map1:
         map2[y] += map1[y]
 
@@ -191,8 +189,6 @@ def multi():
     p.close()
     p.join()
 
-    print(multi_total_count)
-    print(len(multi_total_count))
 
     # scores[c][y] = [list of scores]
     scores = reduce(merge_score, multi_score)
