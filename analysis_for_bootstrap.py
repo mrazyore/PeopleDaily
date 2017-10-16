@@ -59,14 +59,10 @@ def processing(i, multi_score, multi_country_count, multi_total_count, f_list):
     score_map = {}
     for c in countries_set:
         score_map[c] = {}
-        for y in years:
-            score_map[c][y] = []
     # ---------------------------------------
     country_count = {}
     for c in countries_set:
         country_count[c] = {}
-        for y in years:
-            country_count[c][y] = 0
     # ---------------------------------------
     total_count = {}
     for y in years:
@@ -109,8 +105,14 @@ def processing(i, multi_score, multi_country_count, multi_total_count, f_list):
                             wc = count(countryList[c])
                             score = cal_score(wc)
                             if score:
-                                score_map[c][year].append(score)
-                                country_count[c][year] += 1
+                                if year in score_map[c]:
+                                    score_map[c][year].append(score)
+                                else:
+                                    score_map[c][year] = [score]
+                                if year in country_count[c]:
+                                    country_count[c][year] += 1
+                                else:
+                                    country_count[c][year] = 1
 
     # return score_map
     multi_score[i] = score_map
@@ -121,14 +123,20 @@ def processing(i, multi_score, multi_country_count, multi_total_count, f_list):
 def merge_score(map1, map2):
     for c in map1:
         for year in map1[c]:
-            map2[c][year].extend(map1[c][year])
+            if year in map2[c]:
+                map2[c][year].extend(map1[c][year])
+            else:
+                map2[c][year] = map1[c][year]
     return map2
 
 
 def merge_count(map1, map2):
     for c in map1:
         for year in map1[c]:
-            map2[c][year] += map1[c][year]
+            if year in map2[c]:
+                map2[c][year] += map1[c][year]
+            else:
+                map2[c][year] = map1[c][year]
     return map2
 
 
@@ -188,7 +196,6 @@ def multi():
     p.close()
     p.join()
 
-
     # scores[c][y] = [list of scores]
     scores = reduce(merge_score, multi_score)
     country_counts = reduce(merge_count, multi_article_count)
@@ -216,13 +223,13 @@ def multi():
 
     country_article_count = {}
     for c in country_counts:
-        country_article_count[c] = sum(list(country_counts[c].values()))
+        country_article_count[c] = sum(list(country_counts[c].values())) / len(
+            country_counts[c])
     country_article_count = sorted(list(country_article_count.items()),
                                    key=lambda a: a[1], reverse=True)
     with open('article_count.txt', 'w') as f:
         for pair in country_article_count:
             f.write('%d %d\n' % (pair[0], pair[1]))
-
 
 
 if __name__ == '__main__':
