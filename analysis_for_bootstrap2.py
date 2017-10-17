@@ -78,41 +78,39 @@ def processing(i, multi_score, multi_country_count, multi_total_count, f_list):
             for article in data:  # 30天
                 contents = article['contents']
                 countryList = {}
-                whole = '。'.join(contents)
-                if '我国' in whole or '中国' in whole or '中方' in whole:
-                    for sentence in contents:
-                        appear = set()
-                        for c in countries_set:
-                            if c in sentence:
-                                appear.add(c)
-                        for c in alias_map:
-                            if c in sentence:
-                                appear.add(alias_map[c])
-                        appear_list = list(appear)
-                        if len(appear_list) == 1:
-                            # we only calculate those sentence
-                            # with exactly one country
-                            cc = appear_list.pop()
-                            if cc in countryList:
-                                countryList[cc] += '。' + sentence
-                            else:
-                                countryList[cc] = sentence
+                for sentence in contents:
+                    appear = set()
+                    for c in countries_set:
+                        if c in sentence:
+                            appear.add(c)
+                    for c in alias_map:
+                        if c in sentence:
+                            appear.add(alias_map[c])
+                    appear_list = list(appear)
+                    if len(appear_list) == 1:
+                        # we only calculate those sentence
+                        # with exactly one country
+                        cc = appear_list.pop()
+                        if cc in countryList:
+                            countryList[cc] += '。' + sentence
+                        else:
+                            countryList[cc] = sentence
 
-                    # a map contains corresponding sentence with countries
-                    if len(countryList) > 0:
-                        total_count[year] += 1
-                        for c in countryList:
-                            wc = count(countryList[c])
-                            score = cal_score(wc)
-                            if score:
-                                if year in score_map[c]:
-                                    score_map[c][year].append(score)
-                                else:
-                                    score_map[c][year] = [score]
-                                if year in country_count[c]:
-                                    country_count[c][year] += 1
-                                else:
-                                    country_count[c][year] = 1
+                # a map contains corresponding sentence with countries
+                if len(countryList) > 0:
+                    total_count[year] += 1
+                    for c in countryList:
+                        wc = count(countryList[c])
+                        score = cal_score(wc)
+                        if score:
+                            if year in score_map[c]:
+                                score_map[c][year].append(score)
+                            else:
+                                score_map[c][year] = [score]
+                            if year in country_count[c]:
+                                country_count[c][year] += 1
+                            else:
+                                country_count[c][year] = 1
 
     # return score_map
     multi_score[i] = score_map
