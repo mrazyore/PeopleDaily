@@ -1,2 +1,2 @@
 # PeopleDaily
-code for people daily analysis project
+code for people daily newspaper corpus analysis project
