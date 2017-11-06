@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # extract all articles for specific country
-
+from __future__ import division
 from glob2 import glob
 import json
 import codecs
@@ -24,7 +24,7 @@ country = set(target_country)
 
 
 def processing(f_list):
-    articles = []
+    sentences = []
     for file in tqdm(f_list):
 
         print('processing ' + file + '...')
@@ -33,15 +33,15 @@ def processing(f_list):
 
             for article in data:  # 30天
                 contents = article['contents']
-                whole = '。'.join(contents)
-                for c in country:
-                    if c in whole:
-                        articles.append(whole)
-    return articles
+                for sentence in contents:
+                    for c in country:
+                        if c in sentence:
+                            sentences.append(sentence)
+    return sentences
 
 
 if __name__ == '__main__':
     articles = processing(file_list)
-    with open('extract.txt', 'w') as f:
+    with codecs.open('extract.txt', 'w','utf-8') as f:
         for a in articles:
             f.write(a + '\n')

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import division
 from glob2 import glob
 import json
 import os
@@ -88,8 +88,10 @@ def processing(i, multi_score, multi_country_count, multi_total_count, f_list):
                         for c in alias_map:
                             if c in sentence:
                                 appear.add(alias_map[c])
-                        appear_list = list(appear)
-                        if len(appear_list) == 1:
+                        appear_list = set(appear)
+
+                        if len(appear_list) == 1 or (
+                                '印尼' in appear_list and len(appear_list) == 2):
                             # we only calculate those sentence
                             # with exactly one country
                             cc = appear_list.pop()
